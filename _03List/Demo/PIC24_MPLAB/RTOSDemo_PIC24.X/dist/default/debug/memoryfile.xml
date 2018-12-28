@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <executable name="dist/default/debug/RTOSDemo_PIC24.X.debug.elf">
+    <memory name="data">
+      <units>bytes</units>
+      <length>8192</length>
+      <used>5396</used>
+      <free>2796</free>
+    </memory>
+    <memory name="program">
+      <units>bytes</units>
+      <length>65268</length>
+      <used>12975</used>
+      <free>52293</free>
+    </memory>
+  </executable>
+</project>

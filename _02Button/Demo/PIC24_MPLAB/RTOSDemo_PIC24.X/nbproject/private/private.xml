@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/code/WGC/freertos/Button/Source/queue.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/include/queue.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/include/FreeRTOS.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Demo/PIC24_MPLAB/main.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/croutine.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Demo/PIC24_MPLAB/Config_Bit.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Demo/PIC24_MPLAB/ParTest/ParTest.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/portable/MPLAB/PIC24_dsPIC/port.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Demo/PIC24_MPLAB/FreeRTOSConfig.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/include/task.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Demo/PIC24_MPLAB/serial/serial.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/include/semphr.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/portable/MPLAB/PIC24_dsPIC/portmacro.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Demo/Common/Minimal/comtest.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/include/mpu_wrappers.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/portable/MPLAB/PIC24_dsPIC/portasm_PIC24.S</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/include/list.h</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/tasks.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Source/list.c</file>
+            <file>file:/D:/code/WGC/freertos/Button/Demo/PIC24_MPLAB/timertest.c</file>
+        </group>
+    </open-files>
+</project-private>
