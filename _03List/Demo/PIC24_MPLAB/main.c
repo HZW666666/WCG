@@ -117,7 +117,7 @@
 #include "partest.h"
 #include "lcd.h"
 #include "timertest.h"
-
+#include "serial.h"
 
 
 /* Demo task priorities. */
@@ -180,13 +180,16 @@ void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName);
 void task_start(void *parameter);
 void vLEDShark(void *pvParameters);
 //void LED456(void *pvParameters);
-
+void vListTask(void*parameter);
 UBaseType_t start_PRIORITY = 4;
-UBaseType_t vLEDShark_PRIORITY = 3;
+UBaseType_t vLEDShark_PRIORITY = 2;
+UBaseType_t vListTask_PRIORITY = 3;
 //UBaseType_t LED456_PRIORITY = 3;
 //uint16_t configMINIMAL_STACK_SIZE = 128;
 //uint16_t configMINIMAL_STACK_SIZE 128;
 //uint16_t configMINIMAL_STACK_SIZE 128;
+List_t List1;
+ListItem_t ListItem1, ListItem2, ListItem3;
 
 /*
  * Create the demo tasks then start the scheduler.
@@ -208,7 +211,7 @@ int main(void) {//2¸öLEDµÆÉÁË¸
     /* Start the task that will control the LCD.  This returns the handle
     to the queue used to write text out to the task. */
     //	xLCDQueue = xStartLCDTask();
-    xTaskCreate(task_start, "start_task", configMINIMAL_STACK_SIZE, NULL, start_PRIORITY, NULL); /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+    xTaskCreate(task_start, "start_task", 512, NULL, start_PRIORITY, NULL); /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
     /* Start the high frequency interrupt test. */
     vSetupTimerTest(mainTEST_INTERRUPT_FREQUENCY);
 
@@ -324,27 +327,164 @@ void vLEDShark(void *pvParameters) {
     }
 }
 
-//void LED456(void *pvParameters) {
-//    pvParameters = pvParameters;
-//
-//    for (;;) {
-//        _LATE5 ^= 1;
-//        vTaskDelay(100);
-//    }
-//}
-
-//void key_start(void *parameter) {
-//    //    parameter
-//    for (;;) {
-//        if()
-//    }
-//}
-
 void task_start(void *parameter) {
     xTaskCreate(vLEDShark, "vLEDShark", mainCHECK_TAKS_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
     //    xTaskCreate(LED456, "led456", mainCHECK_TAKS_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
+    xTaskCreate(vListTask, "vListTask", mainCHECK_TAKS_STACK_SIZE, NULL, vListTask_PRIORITY, NULL);
     vTaskDelete(NULL);
 }
+
+void Uart3SendString(void*strings) {
+    char *pcByte;
+    pcByte = (char*) strings;
+    /*send strings until get '\0' */
+    while (*pcByte != '\0') {
+        if (xSerialPutChar(NULL, *pcByte, 0) == pdPASS) {
+            _LATE5 ^= 1;
+            pcByte++;
+        }
+    }
+    /*final set led dark*/
+    _LATE5 = 0;
+}
+
+void Uart3SendInterger(UBaseType_t number) {
+    char pcBytes[6] = {0, 0, 0, 0, 0, 0};
+    //    pcByte = (char*) parameter;
+    char cnt = 0;
+    unsigned char headchar = 4;
+    UBaseType_t numbers = number;
+
+    for (cnt = 4; cnt >= 0; cnt--) {
+        pcBytes[(unsigned char) cnt] = numbers % 10;
+        numbers /= 10;
+        if (pcBytes[(unsigned char) cnt]) {
+            headchar = cnt;
+        }
+        pcBytes[(unsigned char) cnt] += 0x30;
+    }
+    Uart3SendString(pcBytes + headchar);
+}
+
+void vListTask(void*parameter) {
+    //    char cByteToSend = 0;
+    vListInitialise(&List1);
+    ListItem1.xItemValue = 300;
+    vListInitialiseItem(&ListItem1);
+    vListInsert(&List1, &ListItem1);
+    ListItem2.xItemValue = 400;
+    vListInitialiseItem(&ListItem2);
+    vListInsert(&List1, &ListItem2);
+    ListItem3.xItemValue = 500;
+    vListInitialiseItem(&ListItem3);
+    vListInsert(&List1, &ListItem3);
+    /*show List1 info*/
+    Uart3SendString("List1.pxIndex is ");
+    Uart3SendInterger((UBaseType_t) List1.pxIndex);
+    Uart3SendString("\r\n");
+    Uart3SendString("List1.uxNumberOfItems is ");
+    Uart3SendInterger(List1.uxNumberOfItems);
+    Uart3SendString("\r\n");
+    /*show ListItem1 info*/
+    Uart3SendString("ListItem1.xItemValue is ");
+    Uart3SendInterger(ListItem1.xItemValue);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem1.pxPrevious is ");
+    Uart3SendInterger((UBaseType_t) ListItem1.pxPrevious);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem1.pxNext is ");
+    Uart3SendInterger((UBaseType_t) ListItem1.pxNext);
+    Uart3SendString("\r\n");
+    /*show ListItem2 info*/
+    Uart3SendString("ListItem2.xItemValue is ");
+    Uart3SendInterger(ListItem2.xItemValue);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem2.pxPrevious is ");
+    Uart3SendInterger((UBaseType_t) ListItem2.pxPrevious);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem2.pxNext is ");
+    Uart3SendInterger((UBaseType_t) ListItem2.pxNext);
+    Uart3SendString("\r\n");
+    /*show ListItem3 info*/
+    Uart3SendString("ListItem3.xItemValue is ");
+    Uart3SendInterger(ListItem3.xItemValue);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem3.pxPrevious is ");
+    Uart3SendInterger((UBaseType_t) ListItem3.pxPrevious);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem3.pxNext is ");
+    Uart3SendInterger((UBaseType_t) ListItem3.pxNext);
+    Uart3SendString("\r\n");
+    Uart3SendString("\r\n");
+    /*Delete ListItem2*/
+    Uart3SendString("Remove ListItem2");
+    Uart3SendString("\r\n");
+    Uart3SendString("List1.uxNumberOfItems is ");
+    Uart3SendInterger(uxListRemove(&ListItem2));
+    Uart3SendString("\r\n");
+    /*show ListItem1 info*/
+    //    Uart3SendString("ListItem1.xItemValue is ");
+    //    Uart3SendInterger(ListItem1.xItemValue);
+    //    Uart3SendString("\r\n");
+    //    Uart3SendString("ListItem1.pxPrevious is ");
+    //    Uart3SendInterger((UBaseType_t) ListItem1.pxPrevious);
+    //    Uart3SendString("\r\n");
+    //    Uart3SendString("ListItem1.pxNext is ");
+    //    Uart3SendInterger((UBaseType_t) ListItem1.pxNext);
+    //    Uart3SendString("\r\n");
+    //    /*show ListItem3 info*/
+    //    Uart3SendString("ListItem3.xItemValue is ");
+    //    Uart3SendInterger(ListItem3.xItemValue);
+    //    Uart3SendString("\r\n");
+    //    Uart3SendString("ListItem3.pxPrevious is ");
+    //    Uart3SendInterger((UBaseType_t) ListItem3.pxPrevious);
+    //    Uart3SendString("\r\n");
+    //    Uart3SendString("ListItem3.pxNext is ");
+    //    Uart3SendInterger((UBaseType_t) ListItem3.pxNext);
+    //    Uart3SendString("\r\n");
+
+    /*insertListEND*/
+    //    List1.pxIndex=List1.pxIndex->pxNext;/**/
+    //    vListInsertEnd(&List1, &ListItem2);
+
+    vListInsert(&List1, &ListItem2);
+    /*show ListItem1 info*/
+    Uart3SendString("ListItem1.xItemValue is ");
+    Uart3SendInterger(ListItem1.xItemValue);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem1.pxPrevious is ");
+    Uart3SendInterger((UBaseType_t) ListItem1.pxPrevious);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem1.pxNext is ");
+    Uart3SendInterger((UBaseType_t) ListItem1.pxNext);
+    Uart3SendString("\r\n");
+    /*show ListItem2 info*/
+    Uart3SendString("ListItem2.xItemValue is ");
+    Uart3SendInterger(ListItem2.xItemValue);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem2.pxPrevious is ");
+    Uart3SendInterger((UBaseType_t) ListItem2.pxPrevious);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem2.pxNext is ");
+    Uart3SendInterger((UBaseType_t) ListItem2.pxNext);
+    Uart3SendString("\r\n");
+    /*show ListItem3 info*/
+    Uart3SendString("ListItem3.xItemValue is ");
+    Uart3SendInterger(ListItem3.xItemValue);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem3.pxPrevious is ");
+    Uart3SendInterger((UBaseType_t) ListItem3.pxPrevious);
+    Uart3SendString("\r\n");
+    Uart3SendString("ListItem3.pxNext is ");
+    Uart3SendInterger((UBaseType_t) ListItem3.pxNext);
+    Uart3SendString("\r\n");
+    for (;;) {
+        //Refresh time=1s
+        //        vTaskDelay(1000);    
+    }
+}
+
+
 
 
 

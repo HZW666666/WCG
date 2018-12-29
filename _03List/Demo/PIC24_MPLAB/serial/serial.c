@@ -123,7 +123,9 @@ xComPortHandle xSerialPortInitMinimal(unsigned long ulWantedBaud, unsigned portB
     //    TRISDbits.TRISD2 = 1; //设置为输入
     //    TRISDbits.TRISD3 = 0; //设置为输出
     _TRISE6 = 0; //用户485通讯控制引脚设置为输出
-    _LATE6 = 0; //默认接收状态,进入低功耗
+    /*_LATE6 = 0;  //默认接收状态,进入低功耗*/
+    /*485 enter tx mode*/
+    _LATE6 = 1;
     __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
     RPOR13bits.RP26R = 0x1C; // RG7->UART3:U3TX
     RPINR17bits.U3RXR = 0x13; // RG8->UART3:U3RX 

@@ -6,6 +6,8 @@
         <group name="Masters19024">
             <file>file:/C:/E/Dev/FreeRTOS/WorkingCopy/FreeRTOS/Demo/PIC24_MPLAB/main.c</file>
         </group>
-        <group/>
+        <group>
+            <file>file:/home/zxc/Documents/wcg_freertos/WCG/_03List/Demo/PIC24_MPLAB/main.c</file>
+        </group>
     </open-files>
 </project-private>

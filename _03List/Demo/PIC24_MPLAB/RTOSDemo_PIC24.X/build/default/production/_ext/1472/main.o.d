@@ -18,4 +18,5 @@ build/default/production/_ext/1472/main.o:  \
 ../../Common/include/comtest2.h  \
  ../../Common/include/partest.h  \
 ../lcd.h  \
-../timertest.h 
+../timertest.h  \
+ ../../Common/include/serial.h 
