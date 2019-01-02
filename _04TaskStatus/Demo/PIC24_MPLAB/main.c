@@ -178,18 +178,19 @@ void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName);
 
 /*-----------------------------------------------------------*/
 void task_start(void *parameter);
-void vLEDShark(void *pvParameters);
-//void LED456(void *pvParameters);
-void vListTask(void*parameter);
 UBaseType_t start_PRIORITY = 4;
 UBaseType_t vLEDShark_PRIORITY = 2;
-UBaseType_t vListTask_PRIORITY = 3;
-//UBaseType_t LED456_PRIORITY = 3;
+UBaseType_t vTaskStatu_PRIORITY = 3;
+
+TaskHandle_t xStateTask;
 //uint16_t configMINIMAL_STACK_SIZE = 128;
 //uint16_t configMINIMAL_STACK_SIZE 128;
 //uint16_t configMINIMAL_STACK_SIZE 128;
-List_t List1;
-ListItem_t ListItem1, ListItem2, ListItem3;
+
+#define LEARN_TASKLISTSTR
+#ifdef LEARN_TASKLISTSTR
+char uBuffer[1000];
+#endif
 
 /*
  * Create the demo tasks then start the scheduler.
@@ -327,13 +328,6 @@ void vLEDShark(void *pvParameters) {
     }
 }
 
-void task_start(void *parameter) {
-    xTaskCreate(vLEDShark, "vLEDShark", mainCHECK_TAKS_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
-    //    xTaskCreate(LED456, "led456", mainCHECK_TAKS_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
-    xTaskCreate(vListTask, "vListTask", mainCHECK_TAKS_STACK_SIZE, NULL, vListTask_PRIORITY, NULL);
-    vTaskDelete(NULL);
-}
-
 void Uart3SendString(void*strings) {
     char *pcByte;
     pcByte = (char*) strings;
@@ -346,6 +340,17 @@ void Uart3SendString(void*strings) {
     }
     /*final set led dark*/
     _LATE5 = 0;
+}
+
+void vConfigureTimerForRunTimeStats(void) {
+    /*Init Timer3*/
+    TMR3 = 0x00;
+    //Period = 0.0001 s; Frequency = 4000000 Hz; PR3 200; 
+    PR3 = 400; //20/0.25us=800
+    //TCKPS 1:1; TON enabled; TSIDL disabled; TCS FOSC/2; TGATE disabled; 
+    T3CON = 0x8000;
+    //    _T3IF = 0;
+    //    T3CONbits.TON = 1;
 }
 
 void Uart3SendInterger(UBaseType_t number) {
@@ -366,125 +371,98 @@ void Uart3SendInterger(UBaseType_t number) {
     Uart3SendString(pcBytes + headchar);
 }
 
-void vListTask(void*parameter) {
-    //    char cByteToSend = 0;
-    vListInitialise(&List1);
-    ListItem1.xItemValue = 300;
-    vListInitialiseItem(&ListItem1);
-    vListInsert(&List1, &ListItem1);
-    ListItem2.xItemValue = 400;
-    vListInitialiseItem(&ListItem2);
-    vListInsert(&List1, &ListItem2);
-    ListItem3.xItemValue = 500;
-    vListInitialiseItem(&ListItem3);
-    vListInsert(&List1, &ListItem3);
-    /*show List1 info*/
-    Uart3SendString("List1.pxIndex is ");
-    Uart3SendInterger((UBaseType_t) List1.pxIndex);
-    Uart3SendString("\r\n");
-    Uart3SendString("List1.uxNumberOfItems is ");
-    Uart3SendInterger(List1.uxNumberOfItems);
-    Uart3SendString("\r\n");
-    /*show ListItem1 info*/
-    Uart3SendString("ListItem1.xItemValue is ");
-    Uart3SendInterger(ListItem1.xItemValue);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem1.pxPrevious is ");
-    Uart3SendInterger((UBaseType_t) ListItem1.pxPrevious);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem1.pxNext is ");
-    Uart3SendInterger((UBaseType_t) ListItem1.pxNext);
-    Uart3SendString("\r\n");
-    /*show ListItem2 info*/
-    Uart3SendString("ListItem2.xItemValue is ");
-    Uart3SendInterger(ListItem2.xItemValue);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem2.pxPrevious is ");
-    Uart3SendInterger((UBaseType_t) ListItem2.pxPrevious);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem2.pxNext is ");
-    Uart3SendInterger((UBaseType_t) ListItem2.pxNext);
-    Uart3SendString("\r\n");
-    /*show ListItem3 info*/
-    Uart3SendString("ListItem3.xItemValue is ");
-    Uart3SendInterger(ListItem3.xItemValue);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem3.pxPrevious is ");
-    Uart3SendInterger((UBaseType_t) ListItem3.pxPrevious);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem3.pxNext is ");
-    Uart3SendInterger((UBaseType_t) ListItem3.pxNext);
-    Uart3SendString("\r\n");
-    Uart3SendString("\r\n");
-    /*Delete ListItem2*/
-    Uart3SendString("Remove ListItem2");
-    Uart3SendString("\r\n");
-    Uart3SendString("List1.uxNumberOfItems is ");
-    Uart3SendInterger(uxListRemove(&ListItem2));
-    Uart3SendString("\r\n");
-    /*show ListItem1 info*/
-    //    Uart3SendString("ListItem1.xItemValue is ");
-    //    Uart3SendInterger(ListItem1.xItemValue);
-    //    Uart3SendString("\r\n");
-    //    Uart3SendString("ListItem1.pxPrevious is ");
-    //    Uart3SendInterger((UBaseType_t) ListItem1.pxPrevious);
-    //    Uart3SendString("\r\n");
-    //    Uart3SendString("ListItem1.pxNext is ");
-    //    Uart3SendInterger((UBaseType_t) ListItem1.pxNext);
-    //    Uart3SendString("\r\n");
-    //    /*show ListItem3 info*/
-    //    Uart3SendString("ListItem3.xItemValue is ");
-    //    Uart3SendInterger(ListItem3.xItemValue);
-    //    Uart3SendString("\r\n");
-    //    Uart3SendString("ListItem3.pxPrevious is ");
-    //    Uart3SendInterger((UBaseType_t) ListItem3.pxPrevious);
-    //    Uart3SendString("\r\n");
-    //    Uart3SendString("ListItem3.pxNext is ");
-    //    Uart3SendInterger((UBaseType_t) ListItem3.pxNext);
-    //    Uart3SendString("\r\n");
+void vStatusTask(void*parameter) {
+    //#define LEARN_SYSTEMSTATE
+    //#define LEARN_TICKCOUNT
+    //#define LEARN_SCHEDULERSTATE
+    //#define LEARN_TASKINFO
+    //#define LEARN_TASKLIST
+#define LEARN_RUNTIME
+#ifdef LEARN_SYSTEMSTATE
+    TaskStatus_t tsksta[5];
+    uint32_t urumtime;
+    char cnt;
+    UBaseType_t xTskNumber;
+#endif
 
-    /*insertListEND*/
-    //    List1.pxIndex=List1.pxIndex->pxNext;/**/
-    //    vListInsertEnd(&List1, &ListItem2);
+#ifdef  LEARN_TICKCOUNT
+    TickType_t xTickCnt;
+#endif
+#ifdef  LEARN_SCHEDULERSTATE
+    UBaseType_t xSchedulerState;
+#endif
+#ifdef LEARN_TASKINFO
 
-    vListInsert(&List1, &ListItem2);
-    /*show ListItem1 info*/
-    Uart3SendString("ListItem1.xItemValue is ");
-    Uart3SendInterger(ListItem1.xItemValue);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem1.pxPrevious is ");
-    Uart3SendInterger((UBaseType_t) ListItem1.pxPrevious);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem1.pxNext is ");
-    Uart3SendInterger((UBaseType_t) ListItem1.pxNext);
-    Uart3SendString("\r\n");
-    /*show ListItem2 info*/
-    Uart3SendString("ListItem2.xItemValue is ");
-    Uart3SendInterger(ListItem2.xItemValue);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem2.pxPrevious is ");
-    Uart3SendInterger((UBaseType_t) ListItem2.pxPrevious);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem2.pxNext is ");
-    Uart3SendInterger((UBaseType_t) ListItem2.pxNext);
-    Uart3SendString("\r\n");
-    /*show ListItem3 info*/
-    Uart3SendString("ListItem3.xItemValue is ");
-    Uart3SendInterger(ListItem3.xItemValue);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem3.pxPrevious is ");
-    Uart3SendInterger((UBaseType_t) ListItem3.pxPrevious);
-    Uart3SendString("\r\n");
-    Uart3SendString("ListItem3.pxNext is ");
-    Uart3SendInterger((UBaseType_t) ListItem3.pxNext);
-    Uart3SendString("\r\n");
+#endif  
+#ifdef LEARN_TASKLIST
+#endif
+
+
+#ifdef LEARN_SYSTEMSTATE
+    /*uxGetSystemState*/
+    xTskNumber = uxTaskGetSystemState(tsksta, (const UBaseType_t) sizeof (tsksta), &urumtime);
+    /*print system info*/
+    for (cnt = 0; cnt < xTskNumber; cnt++) {
+        Uart3SendString((void *) tsksta[(unsigned char) cnt].pcTaskName);
+        Uart3SendString("\r\n");
+    }
+#endif
+
+
     for (;;) {
-        //Refresh time=1s
-        //        vTaskDelay(1000);    
+#ifdef  LEARN_TICKCOUNT
+        /*xTaskGetTickCount*/
+        xTickCnt = xTaskGetTickCount();
+        Uart3SendString("Tick Count Now is ");
+        Uart3SendInterger(xTickCnt);
+        Uart3SendString("\r\n");
+#endif
+#ifdef  LEARN_SCHEDULERSTATE
+        /*xTaskGetTickCount*/
+        xSchedulerState = xTaskGetSchedulerState();
+        Uart3SendString("Scheduler state is ");
+        Uart3SendInterger(xSchedulerState);
+        Uart3SendString("\r\n");
+#endif
+#ifdef LEARN_TASKINFO
+        Uart3SendString("Task name is ");
+        Uart3SendString(pcTaskGetName(xStateTask));
+        Uart3SendString("\r\n");
+        Uart3SendString("task priority is");
+        Uart3SendInterger(uxTaskPriorityGet(xStateTask));
+        Uart3SendString("\r\n");
+        Uart3SendString("task handle is");
+        Uart3SendInterger((UBaseType_t) xTaskGetCurrentTaskHandle());
+        Uart3SendString("\r\n");
+        Uart3SendString("the number of tasks is");
+        Uart3SendInterger(uxTaskGetNumberOfTasks());
+        Uart3SendString("\r\n");
+        Uart3SendString("the state of task is");
+        Uart3SendInterger(eTaskGetState(xStateTask));
+        Uart3SendString("\r\n");
+        Uart3SendString("the number of stack is");
+        Uart3SendInterger(uxTaskGetStackHighWaterMark(xStateTask));
+        Uart3SendString("\r\n");
+#endif
+#ifdef LEARN_TASKLIST
+        Uart3SendString("TASKLIST!!!\r\n");
+        vTaskList(uBuffer);
+        Uart3SendString(uBuffer);
+        Uart3SendString("\r\n");
+#endif
+#ifdef LEARN_RUNTIME
+        vTaskGetRunTimeStats(uBuffer);
+        Uart3SendString(uBuffer);
+        Uart3SendString("\r\n");
+#endif  
+        vTaskDelay(1000);
     }
 }
 
-
-
+void task_start(void *parameter) {
+    xTaskCreate(vLEDShark, "vLEDShark", mainCHECK_TAKS_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
+    xTaskCreate(vStatusTask, "vStatusTask", mainCHECK_TAKS_STACK_SIZE, NULL, vTaskStatu_PRIORITY, xStateTask);
+    vTaskDelete(NULL);
+}
 
 
