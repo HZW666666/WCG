@@ -2,6 +2,17 @@
 <configurationDescriptor version="65">
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <logicalFolder name="HeaderFiles" displayName="头文件" projectFiles="true">
+      <logicalFolder name="MCC Generated Files"
+                     displayName="MCC Generated Files"
+                     projectFiles="true">
+        <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
+        <itemPath>mcc_generated_files/pin_manager.h</itemPath>
+        <itemPath>mcc_generated_files/traps.h</itemPath>
+        <itemPath>mcc_generated_files/clock.h</itemPath>
+        <itemPath>mcc_generated_files/tmr3.h</itemPath>
+        <itemPath>mcc_generated_files/mcc.h</itemPath>
+        <itemPath>mcc_generated_files/system.h</itemPath>
+      </logicalFolder>
       <itemPath>../../../Source/include/semphr.h</itemPath>
       <itemPath>../../../Source/include/task.h</itemPath>
       <itemPath>../../../Source/include/croutine.h</itemPath>
@@ -19,6 +30,17 @@
         <itemPath>../../../Source/portable/MPLAB/PIC24_dsPIC/portasm_PIC24.S</itemPath>
         <itemPath>../../../Source/tasks.c</itemPath>
         <itemPath>../../../Source/portable/MemMang/heap_4.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="MCC Generated Files"
+                     displayName="MCC Generated Files"
+                     projectFiles="true">
+        <itemPath>mcc_generated_files/system.c</itemPath>
+        <itemPath>mcc_generated_files/traps.c</itemPath>
+        <itemPath>mcc_generated_files/clock.c</itemPath>
+        <itemPath>mcc_generated_files/tmr3.c</itemPath>
+        <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
+        <itemPath>mcc_generated_files/mcc.c</itemPath>
+        <itemPath>mcc_generated_files/pin_manager.c</itemPath>
       </logicalFolder>
       <logicalFolder name="Standard Demo Source"
                      displayName="Standard Demo Source"
@@ -42,6 +64,7 @@
     </logicalFolder>
     <logicalFolder name="ExternalFiles" displayName="重要文件" projectFiles="false">
       <itemPath>Makefile</itemPath>
+      <itemPath>MyConfig.mc3</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -295,6 +318,38 @@
         <property key="programoptions.uselvpprogramming" value="true"/>
         <property key="安全段。分部编程" value="FullChipProgramming"/>
       </PKOBSKDEPlatformTool>
+      <item path="mcc_generated_files/clock.c" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/clock.h" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/interrupt_manager.c"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/interrupt_manager.h"
+            ex="true"
+            overriding="false">
+      </item>
+      <item path="mcc_generated_files/mcc.c" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/mcc.h" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/pin_manager.c" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/pin_manager.h" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/system.c" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/system.h" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/tmr3.c" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/tmr3.h" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/traps.c" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/traps.h" ex="true" overriding="false">
+      </item>
       <pk4hybrid>
         <property key="ADC 1" value="true"/>
         <property key="AutoSelectMemRanges" value="auto"/>
@@ -351,7 +406,7 @@
         <property key="memories.instruction.ram.ranges"
                   value="${memories.instruction.ram.ranges}"/>
         <property key="memories.programmemory" value="true"/>
-        <property key="memories.programmemory.ranges" value="0-ffffffffffffffff"/>
+        <property key="memories.programmemory.ranges" value="0-abf7"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
