@@ -191,6 +191,7 @@ TaskHandle_t xStateTask;
 #ifdef LEARN_TASKLISTSTR
 char uBuffer[1000];
 #endif
+volatile unsigned long ulHighFrequencyTimerTicks;
 
 /*
  * Create the demo tasks then start the scheduler.
@@ -342,17 +343,6 @@ void Uart3SendString(void*strings) {
     _LATE5 = 0;
 }
 
-void vConfigureTimerForRunTimeStats(void) {
-    /*Init Timer3*/
-    TMR3 = 0x00;
-    //Period = 0.0001 s; Frequency = 4000000 Hz; PR3 200; 
-    PR3 = 400; //20/0.25us=800
-    //TCKPS 1:1; TON enabled; TSIDL disabled; TCS FOSC/2; TGATE disabled; 
-    T3CON = 0x8000;
-    //    _T3IF = 0;
-    //    T3CONbits.TON = 1;
-}
-
 void Uart3SendInterger(UBaseType_t number) {
     char pcBytes[6] = {0, 0, 0, 0, 0, 0};
     //    pcByte = (char*) parameter;
@@ -369,6 +359,24 @@ void Uart3SendInterger(UBaseType_t number) {
         pcBytes[(unsigned char) cnt] += 0x30;
     }
     Uart3SendString(pcBytes + headchar);
+}
+
+void vConfigureTimerForRunTimeStats(void) {
+    /*Init Timer3*/
+    TMR3 = 0x00;
+    //Period = 0.0001 s; Frequency = 4000000 Hz; PR3 200; 
+    PR3 = 400; //20/0.25us=800
+    //TCKPS 1:1; TON enabled; TSIDL disabled; TCS FOSC/2; TGATE disabled; 
+    T3CON = 0x8000;
+    _T3IP = 3;
+    _T3IE = 1;
+    _T3IF = 0;
+    //    T3CONbits.TON = 1;
+}
+
+void __attribute__((__interrupt__, auto_psv)) _T3Interrupt(void) {
+    ulHighFrequencyTimerTicks++;
+    _T3IF = 0;
 }
 
 void vStatusTask(void*parameter) {
